@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Julie's Party | The Experience</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #020617;
+            --accent: #c084fc;
+            --cyan: #22d3ee;
+            --glass: rgba(255, 255, 255, 0.03);
+            --text: #f8fafc;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; cursor: default; }
+        body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; justify-content: center; align-items: center; overflow-x: hidden; }
+
+        /* Animated Background Orbs */
+        .orb { position: fixed; border-radius: 50%; z-index: -1; filter: blur(100px); opacity: 0.2; animation: drift 15s infinite alternate ease-in-out; }
+        .orb1 { width: 400px; height: 400px; background: var(--accent); top: -10%; left: -10%; }
+        .orb2 { width: 300px; height: 300px; background: var(--cyan); bottom: -5%; right: -5%; animation-delay: -5s; }
+        @keyframes drift { from { transform: translate(0,0); } to { transform: translate(50px, 80px); } }
+
+        /* Main Card */
+        .card {
+            width: 90%; max-width: 420px; background: var(--glass); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255,255,255,0.1); padding: 2rem; border-radius: 35px; text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); position: relative;
+        }
+
+        #countdown { font-size: 0.8rem; font-weight: 800; color: var(--accent); letter-spacing: 2px; margin-bottom: 1rem; }
+        h1 { font-size: 3.2rem; font-weight: 900; letter-spacing: -2px; margin-bottom: 0.5rem; line-height: 1; }
+        .highlight { color: var(--accent); text-shadow: 0 0 20px rgba(192, 132, 252, 0.5); }
+
+        /* Secret Address Section */
+        .secret-box { margin: 1.5rem 0; background: rgba(0,0,0,0.4); padding: 1.2rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); }
+        #address-text { filter: blur(8px); transition: all 0.8s ease; font-size: 0.95rem; color: #94a3b8; }
+        #address-text.revealed { filter: blur(0); color: #fff; text-shadow: 0 0 10px var(--cyan); }
+        
+        input#pass {
+            background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;
+            color: white; padding: 5px 10px; font-size: 0.8rem; margin-top: 10px; width: 60%; text-align: center;
+        }
+
+        /* Music Player UI */
+        .music-player {
+            display: flex; align-items: center; justify-content: center; gap: 15px;
+            margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .music-icon { font-size: 1.5rem; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
+        .song-info { text-align: left; font-size: 0.75rem; color: #64748b; }
+        .song-name { color: #fff; font-weight: 700; display: block; }
+
+        /* Buttons */
+        .rsvp-btn {
+            display: block; width: 100%; padding: 1.2rem; background: var(--accent); color: #000;
+            text-decoration: none; font-weight: 800; border-radius: 18px; margin-top: 1.5rem;
+            transition: all 0.3s; box-shadow: 0 10px 20px rgba(192, 132, 252, 0.3);
+        }
+        .rsvp-btn:hover { transform: scale(1.03); background: #fff; box-shadow: 0 0 30px #fff; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+
+    <div class="card">
+        <div id="countdown">LOADING...</div>
+        <h1>THE <span class="highlight">PARTY.</span></h1>
+        <p style="color: #94a3b8; margin-bottom: 1rem;">Join the chaos at Julie's.</p>
+
+        <div class="secret-box">
+            <div id="address-text">SECRET LOCATION REVEALS AT ENTRY</div>
+            <input type="text" id="pass" placeholder="Enter Password" oninput="checkPass(this.value)">
+            <p style="font-size: 0.6rem; color: #475569; margin-top: 8px;">HINT: THE VIBE IS...</p>
+        </div>
+
+        <a href="https://forms.gle/KNYCpWavogQw8Uet5" class="rsvp-btn" id="confetti-trigger">RSVP FOR ACCESS</a>
+
+        <div class="music-player">
+            <div class="music-icon">🎵</div>
+            <div class="song-info">
+                <span class="song-name">Julie's House Mix 2026</span>
+                <span>02:45 / 08:00</span>
+            </div>
+            <div style="font-size: 1.2rem;">⏭️</div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // 1. Password Logic (The secret is VIBES)
+        function checkPass(val) {
+            if(val.toUpperCase() === "VIBES") {
+                const addr = document.getElementById('address-text');
+                addr.innerHTML = "📍 123 Vibe Street, Los Angeles";
+                addr.classList.add('revealed');
+                document.getElementById('pass').style.display = 'none';
+            }
+        }
+
+        // 2. Confetti Cannon
+        document.getElementById('confetti-trigger').addEventListener('click', function(e) {
+            e.preventDefault();
+            confetti({
+                particleCount: 150, spread: 70, origin: { y: 0.6 },
+                colors: ['#c084fc', '#22d3ee', '#ffffff']
+            });
+            setTimeout(() => { window.open(this.href, '_blank'); }, 900);
+        });
+
+        // 3. Countdown Timer
+        const partyDate = new Date("March 28, 2026 21:00:00").getTime();
+        setInterval(function() {
+            const now = new Date().getTime();
+            const d = partyDate - now;
+            const days = Math.floor(d / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((d % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const mins = Math.floor((d % (1000 * 60 * 60)) / (1000 * 60));
+            const secs = Math.floor((d % (1000 * 60)) / 1000);
+            document.getElementById("countdown").innerHTML = `${days}D : ${hours}H : ${mins}M : ${secs}S`;
+        }, 1000);
+    </script>
+</body>
+</html>
